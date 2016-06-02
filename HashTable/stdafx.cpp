@@ -43,6 +43,13 @@ void InitTable(HashTable *T, int nLen)
 		exit(-1);//内存不足
 
 	T->data = pTemp;
+	//标记存储空间为空
+	for (int i = 0;
+		i < SIZE[T->sizeIndex];
+		i++)
+	{
+		T->data[i] = -1;
+	}
 	T->nLen = 0;
 }
 
@@ -73,7 +80,7 @@ int SearchTable(HashTable T, int nKey, int* nTime)
 		&& T.data[nPos] != nKey)
 	{
 		nCom++;
-		nPos = nPos + nCom;
+		nPos = (nPos + 1) % SIZE[T.sizeIndex];
 	}
 	//更新比较次数，反馈给调用函数
 	*nTime = nPos;
@@ -122,8 +129,89 @@ bool InsertToTable(HashTable *T, int nKey)
 	while (T->data[nPos] != -1)
 		nPos = (nPos + 1) % SIZE[T->sizeIndex];
 
-	
+	//插入元素
+	T->data[nPos] = nKey;
+	//完成
+	return true;
+}
 
+/*
+*	函数名称:
+*		RecreatTable
+*	功能描述:
+*		重构哈希表
+*	函数参数:
+*		HashTable *T  要重构的哈希表
+*	返回值:
+*		无
+*	模块历史:
+*	  	创建于2016.06.01, by 张铭宇
+*/
+void RecreatTable(HashTable *T)
+{
+	if (SIZE[T->sizeIndex] == 97)//达到容量数组最大值
+		return;
+	//新,旧表大小
+	int nNewSize = SIZE[T->sizeIndex + 1];
+	int nOldSize = SIZE[T->sizeIndex];
+	//重新分配空间
+	int *pTemp = 
+		(int*)realloc(T->data,
+		sizeof(int)* nNewSize);
 
+	if (!pTemp)
+		exit(-1);//内存不足
 
+	//将新生存储空间标记为空
+	for (int i = nOldSize;
+		i < nNewSize;
+		i++)
+	{
+		T->data[i] = -1;
+	}
+
+	//在原存储空间范围，由后之前，检测是否有元素hash值发生变化
+	for (int i = nOldSize - 1;
+		i >= 0; i--)
+	{
+		//待查元素
+		int nCheck = T->data[i];
+
+		//对旧hash值与新hash值不一致的元素进行处理
+		if (nCheck != -1 &&
+			nCheck % nOldSize
+			!= nCheck % nNewSize)
+		{
+			//新hash值对应位置的偏移量
+			int nDiv = 0;
+			int nNewHash = nCheck % nNewSize;
+			while (
+				T->data[nNewHash + nDiv] != -1)
+			{
+				nDiv++;
+			}
+			//转移元素，将原位置置空
+			T->data[nNewHash + nDiv] = nCheck;
+			T->data[i] = -1;
+		}
+	}
+}
+
+/*
+*	函数名称:
+*		DestroyTable
+*	功能描述:
+*		销毁哈希表
+*	函数参数:
+*		HashTable *T  要销毁的哈希表
+*	返回值:
+*		无
+*	模块历史:
+*	  	创建于2016.05.31, by 张铭宇
+*/
+void DestroyTable(HashTable *T)
+{
+	free(T->data);
+	T->sizeIndex = 0;
+	T->nLen = 0;
 }
