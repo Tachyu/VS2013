@@ -11,7 +11,6 @@
 #include <tchar.h>
 #include "malloc.h"
 #include "stdlib.h"
-#include "windows.h"
 
 
 typedef struct{
@@ -79,7 +78,7 @@ bool InsertToTable(HashTable *T, int nKey);
 
 /*
 *	函数名称:
-*		FindTable
+*		SearchTable
 *	功能描述:
 *		查找哈希表
 *	函数参数:
@@ -91,7 +90,7 @@ bool InsertToTable(HashTable *T, int nKey);
 *	模块历史:
 *	  	创建于2016.05.31, by 张铭宇
 */
-int FindTable(HashTable T, int nKey);
+int SearchTable(HashTable T, int nKey);
 
 /*
 *	函数名称:
