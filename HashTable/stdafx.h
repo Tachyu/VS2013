@@ -19,16 +19,6 @@ typedef struct{
 	int nLen;		//元素个数
 }HashTable;
 
-typedef struct{
-	LNode *data;//数据
-	int nLen;	//表长
-}HashLink;
-
-typedef struct
-{
-	int nData;
-	struct LNode *pNext;
-}LNode;
 
 /*
 *	函数名称:
@@ -52,13 +42,12 @@ int GetHash(HashTable T, int nKey);
 *		初始化哈希表
 *	函数参数:
 *		HashTable *T 要初始化的哈希表
-*		int nLen	 表长
 *	返回值:
 *		无
 *	模块历史:
 *	  	创建于2016.05.31, by 张铭宇
 */
-void InitTable(HashTable *T, int nLen);
+void InitTable(HashTable *T);
 
 /*
 *	函数名称:
@@ -84,13 +73,14 @@ bool InsertToTable(HashTable *T, int nKey);
 *	函数参数:
 *		HashTable T  要查找的哈希表
 *		int nKey     要查找的值
+*		int *nTime   比较的次数
 *	返回值:
 *		-1	 未找到
 *		nPos 表中的位置
 *	模块历史:
 *	  	创建于2016.05.31, by 张铭宇
 */
-int SearchTable(HashTable T, int nKey);
+int SearchTable(HashTable T, int nKey, int* nTime);
 
 /*
 *	函数名称:
